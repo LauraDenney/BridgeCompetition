@@ -1,7 +1,8 @@
-# Go Direct Sensor Readout With Start and Stop Buttons
+# Go Direct Sensor Bridge Tester Competition 
 
-Simple example of connecting to a Vernier Go Direct® Sensor with WebBluetooth and graphing the sensor value in a Desmos window. Use the start/stop buttons to start and stop collection. 
-Included are some simple style elements using a CSS file in the <style> tag. 
+A simple webpage to test bridge strength with GoDirect Force sensor. Connect to a device, add a student, then begin collecting data! Continue adding students and data to test all bridge. Once competition is over, click disconnect to disconnect from the device and see the maximum values for each student. Look at the high score box to determine a winner! 
+
+Built to replace the LabView software and to connect with new GoDirect sensors. 
 
 ## License
 
