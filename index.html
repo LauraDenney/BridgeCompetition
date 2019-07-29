@@ -3,13 +3,66 @@
 <html>
 <head>
   <title>Go Direct Sensor Readout</title>
-  <meta name="description" content="Simple example of connecting to a Vernier Go Direct® Sensor with WebBluetooth and logging out the default sensor value">
+  <meta name="description" content="Simple expample of connecting to a Vernier Go Direct® Sensor with WebBluetooth and logging out the default sensor value">
   <meta charset="utf-8">
   <script src="https://unpkg.com/@vernier/godirect/dist/godirect.min.umd.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
  <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
-   <link rel="stylesheet" href="/style.css">
-  <script src="/script.js" defer></script>
+ 
+<style>
+   .textBox{
+  background-color: #408c99;
+  color: white;
+  font-family:Arial;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;  
+
+  }
+  .button {
+	-moz-box-shadow: 0px 10px 14px -7px #276873;
+	-webkit-box-shadow: 0px 10px 14px -7px #276873;
+	box-shadow: 0px 10px 14px -7px #276873;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #599bb3), color-stop(1, #408c99));
+	background:-moz-linear-gradient(top, #599bb3 5%, #408c99 100%);
+	background:-webkit-linear-gradient(top, #599bb3 5%, #408c99 100%);
+	background:-o-linear-gradient(top, #599bb3 5%, #408c99 100%);
+	background:-ms-linear-gradient(top, #599bb3 5%, #408c99 100%);
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#599bb3', endColorstr='#408c99',GradientType=0);
+	background-color:#599bb3;
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px;
+	border-radius:8px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:24px;
+	padding:13px 32px;
+	text-decoration:none;
+}
+.button:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #408c99), color-stop(1, #599bb3));
+	background:-moz-linear-gradient(top, #408c99 5%, #599bb3 100%);
+	background:-webkit-linear-gradient(top, #408c99 5%, #599bb3 100%);
+	background:-o-linear-gradient(top, #408c99 5%, #599bb3 100%);
+	background:-ms-linear-gradient(top, #408c99 5%, #599bb3 100%);
+	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#408c99', endColorstr='#599bb3',GradientType=0);
+	background-color:#408c99;
+}
+.button:active {
+	position:relative;
+	top:1px;
+}
+
+
+</style>
+  
 </head>
 
 <body> 
@@ -30,5 +83,173 @@
   <div class = "textBox" id = "localMaxReading"></div>
   <div class = "textBox" id = "maxReading"></div>
   <pre  id="output"></pre> 
+
+  <script>
+  window.chartColors = {
+  	red: 'rgb(89, 155, 179)',
+	  yellow: 'rgb(113, 89, 179)',
+	  blue: 'rgb(178, 89, 155)',
+	  color1: 'rgb(121, 36, 96)',
+    color3: 'rgb(199, 0, 57)',
+    color4: 'rgb(255, 87, 51)'
+  };
+  
+    const selectDeviceBtn = document.querySelector('#select_device');
+    const output = document.querySelector('#output'); 
+    let gdxDevice = "";
+    let globalMax = 0;
+    const students = [];
+    let curStudent = "";
+    let curDataset = "";
+    
+    class Student {
+        constructor(name) {
+          this.studentName = name;
+          this.sensorValues = [];
+          this.max = 0; 
+          
+        }
+      }
+    
+    const selectDevice = async () => {
+      try {
+        gdxDevice = await godirect.selectDevice();
+        output.textContent += `\n Connected to `+gdxDevice.name;
+        output.textContent += `\n Press 'Add Student' to add a new student \n Then press 'Start Collection'to begin testing \n Press 'Stop Collection to stop collecting data `;
+        output.textContent += `\n Once stopped, you may add a new student or Disconnect to end the competition and see the final results`;
+      } catch (err) {
+        console.error(err);
+      }
+    };
+     
+    
+    let lastValue = 0;
+    const startCollection = async () => {
+       
+      gdxDevice.start(500);
+      let localMax = 0;
+      const sensor =  gdxDevice.getSensor(1);
+
+      let count = 21;
+      
+      
+      sensor.on('value-changed', (sensor) => {
+       
+        if (sensor.value !== lastValue){
+          curStudent.sensorValues.push(sensor.value);	
+          lastValue = sensor.value;
+     	    if (curDataset.data.length >= count) {
+				    config.data.labels.push(count++);
+          }
+          
+          curDataset.data.push(curStudent.sensorValues.pop());
+				  window.myLine.update();
+        }    
+       
+        reading.textContent = `${curStudent.studentName}'s value: ${sensor.value} ${sensor.unit}`;
+       
+        console.log(`student name: ${curStudent.studentName} value: ${sensor.value} units: ${sensor.unit}`);
+      
+      
+        if (sensor.value > globalMax){
+           globalMax = sensor.value;
+           maxReading.textContent = `High Score = ` + globalMax + `( ` + curStudent.studentName + ` )`;
+        }
+       
+        if(sensor.value > curStudent.max){
+          curStudent.max = sensor.value;
+          localMaxReading.textContent = curStudent.studentName + `'s max = ` + curStudent.max;
+        }
+      });
+       
+     } 
+  const stopCollection = async () => {
+        gdxDevice.stop();
+      }
+  const disconnectDevice = async () => {
+    
+       gdxDevice.close();
+        
+         gdxDevice.on('device-closed', () => {
+          output.textContent += `\n\n Disconnected from `+gdxDevice.name+`\n`;
+        }); 
+    
+       students.forEach(function (student) {
+        output.textContent += `\n \n student name: ${student.studentName} max: ${student.max}`; 
+        
+      }); 
+                      
+
+  }
+  
+  var colorNames = Object.keys(window.chartColors);  
+ 
+  const addStudent = async () => {
+     let name = prompt('enter student name');
+     curStudent = new Student(name);
+     students.push(curStudent);
+    
+    var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+			var newDataset = {
+				label: curStudent.studentName,
+				backgroundColor: newColor,
+				borderColor: newColor,
+				data: [],
+				fill: false
+			};
+
+
+      curDataset = newDataset;
+			config.data.datasets.push(newDataset);
+			window.myLine.update();
+
+     } 
+  var config = {
+			type: 'line',
+			data: {
+				labels: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], 
+				datasets: [ ]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Bridge Competition'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Time'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Force'
+						}
+					}]
+				}
+			}
+		};
+    	window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+
+  
+     
+  </script>
 </body>
 </html>
