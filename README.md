@@ -1,37 +1,10 @@
-## Welcome to GitHub Pages
+# Go Direct Sensor Readout With Start and Stop Buttons
 
-You can use the [editor on GitHub](https://github.com/LauraDenney/BridgeCompetition/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+Simple example of connecting to a Vernier Go Direct® Sensor with WebBluetooth and graphing the sensor value in a Desmos window. Use the start/stop buttons to start and stop collection. 
+Included are some simple style elements using a CSS file in the <style> tag. 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## License
 
-### Markdown
+[BSD 3-Clause License](../../LICENSE)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/LauraDenney/BridgeCompetition/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Vernier products are designed for educational use. Our products are not designed nor are they recommended for any industrial, medical, or commercial process such as life support, patient diagnosis, control of a manufacturing process, or industrial testing of any kind.
