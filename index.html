@@ -58,11 +58,9 @@
 .button:active {
 	position:relative;
 	top:1px;
-}
+} 
+  </style>
 
-
-</style>
-  
 </head>
 
 <body> 
@@ -124,6 +122,7 @@
      
     
     let lastValue = 0;
+
     const startCollection = async () => {
        
       gdxDevice.start(500);
@@ -136,8 +135,10 @@
       sensor.on('value-changed', (sensor) => {
        
         if (sensor.value !== lastValue){
-          curStudent.sensorValues.push(sensor.value);	
-          lastValue = sensor.value;
+
+          curStudent.sensorValues.push(sensor.value.toFixed(3));	
+          lastValue = sensor.value.toFixed(3);
+
      	    if (curDataset.data.length >= count) {
 				    config.data.labels.push(count++);
           }
@@ -146,19 +147,20 @@
 				  window.myLine.update();
         }    
        
-        reading.textContent = `${curStudent.studentName}'s value: ${sensor.value} ${sensor.unit}`;
+        reading.textContent = `${curStudent.studentName}'s value: ${sensor.value.toFixed(3)} ${sensor.unit}`;
+
        
         console.log(`student name: ${curStudent.studentName} value: ${sensor.value} units: ${sensor.unit}`);
       
       
         if (sensor.value > globalMax){
-           globalMax = sensor.value;
-           maxReading.textContent = `High Score = ` + globalMax + `( ` + curStudent.studentName + ` )`;
+           globalMax = sensor.value.toFixed(3);
+           maxReading.textContent = `High Score = ` + globalMax + `${sensor.unit}` + `(` +  curStudent.studentName + `)`;
         }
        
         if(sensor.value > curStudent.max){
-          curStudent.max = sensor.value;
-          localMaxReading.textContent = curStudent.studentName + `'s max = ` + curStudent.max;
+          curStudent.max = sensor.value.toFixed(3);
+          localMaxReading.textContent = curStudent.studentName + `'s max = ` + curStudent.max + `${sensor.unit}`;
         }
       });
        
@@ -247,9 +249,6 @@
 			var ctx = document.getElementById('canvas').getContext('2d');
 			window.myLine = new Chart(ctx, config);
 		};
-
-  
-     
   </script>
 </body>
 </html>
