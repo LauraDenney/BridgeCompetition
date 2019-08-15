@@ -3,13 +3,14 @@
 <html>
 <head>
   <title>Go Direct Sensor Readout</title>
-  <meta name="description" content="Simple example of connecting to a Vernier Go Direct® Sensor with WebBluetooth and logging out the default sensor value">
+  <meta name="description" content="Simple expample of connecting to a Vernier Go Direct® Sensor with WebBluetooth and logging out the default sensor value">
   <meta charset="utf-8">
   <script src="https://unpkg.com/@vernier/godirect/dist/godirect.min.umd.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
  <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
-  <style>
-     .textBox{
+ 
+<style>
+   .textBox{
   background-color: #408c99;
   color: white;
   font-family:Arial;
@@ -59,6 +60,7 @@
 	top:1px;
 } 
   </style>
+
 </head>
 
 <body> 
@@ -79,9 +81,9 @@
   <div class = "textBox" id = "localMaxReading"></div>
   <div class = "textBox" id = "maxReading"></div>
   <pre  id="output"></pre> 
- 
+
   <script>
-    window.chartColors = {
+  window.chartColors = {
   	red: 'rgb(89, 155, 179)',
 	  yellow: 'rgb(113, 89, 179)',
 	  blue: 'rgb(178, 89, 155)',
@@ -120,8 +122,8 @@
      
     
     let lastValue = 0;
-  
-const startCollection = async () => {
+
+    const startCollection = async () => {
        
       gdxDevice.start(500);
       let localMax = 0;
@@ -133,8 +135,10 @@ const startCollection = async () => {
       sensor.on('value-changed', (sensor) => {
        
         if (sensor.value !== lastValue){
+
           curStudent.sensorValues.push(sensor.value.toFixed(3));	
           lastValue = sensor.value.toFixed(3);
+
      	    if (curDataset.data.length >= count) {
 				    config.data.labels.push(count++);
           }
@@ -144,6 +148,7 @@ const startCollection = async () => {
         }    
        
         reading.textContent = `${curStudent.studentName}'s value: ${sensor.value.toFixed(3)} ${sensor.unit}`;
+
        
         console.log(`student name: ${curStudent.studentName} value: ${sensor.value} units: ${sensor.unit}`);
       
@@ -244,8 +249,6 @@ const startCollection = async () => {
 			var ctx = document.getElementById('canvas').getContext('2d');
 			window.myLine = new Chart(ctx, config);
 		};
-
-  
   </script>
 </body>
 </html>
